@@ -25,7 +25,8 @@ SECRET_KEY = 'f_ii)lw_&78+td4j@xc@+g(d5*%ubtk108a%q+#4h251w-_j-d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Application definition
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_swagger',
     'rest_framework.authtoken',
+    'corsheaders',
     'user_manager',
     'calendar_manager',
 ]
@@ -52,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -109,6 +112,26 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Setting LOGIN/LOGOUT urls, by default it uses django default login/logout.
+# Swagger Login/Logout rely on this setting.
+
+LOGIN_URL = 'rest_framework:login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_URL = 'rest_framework:logout'
+LOGOUT_REDIRECT_URL = '/'
+JSON_EDITOR = True
+
+
+# REST Framework Setting
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -127,3 +150,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'static'
