@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import pre_save
@@ -17,6 +19,7 @@ class LeaveRequest(models.Model):
         (PERSONAL, "Personal"),
         (SICK, "Sick"),
     )
+    rid = models.UUIDField('Request ID', default=uuid.uuid4, unique=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.IntegerField('Leave Type', choices=LEAVE_TYPE, default=PERSONAL)
     from_date = models.DateField()
@@ -26,6 +29,6 @@ class LeaveRequest(models.Model):
 
 
 @receiver(pre_save, sender=LeaveRequest)
-def auto_approve_on_sick_type(sender, instance, **kwargs):
+def auto_approve_on_sick_type(sender, instance, true=True, **kwargs):
     if instance.type == LeaveRequest.SICK:
-        instance.is_approved = True
+        instance.is_approved = true
