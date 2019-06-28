@@ -1,6 +1,7 @@
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
@@ -26,11 +27,6 @@ class LeaveRequestViewSet(viewsets.mixins.CreateModelMixin,
     queryset = LeaveRequest.objects.all()
     lookup_field = 'rid'
 
-    def get_permissions(self):
-        if self.action == 'list':
-            return [AllowAny(), ]
-        return super(LeaveRequestViewSet, self).get_permissions()
-
     def create(self, request, *args, **kwargs):
         """
         Create new leave request.
@@ -44,6 +40,15 @@ class LeaveRequestViewSet(viewsets.mixins.CreateModelMixin,
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def list(self, request, *args, **kwargs):
+        """
+        Get own leave requests.
+        ---
+        """
+        queryset = self.queryset.filter(user=request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def destroy(self, request, *args, **kwargs):
         """
         Cancel leave request.
@@ -54,3 +59,13 @@ class LeaveRequestViewSet(viewsets.mixins.CreateModelMixin,
             return Response(status=status.HTTP_404_NOT_FOUND)
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=['GET'], detail=False, permission_classes=(AllowAny,))
+    def all(self, request):
+        """
+        Get all approved leave requests.
+        ---
+        """
+        queryset = self.queryset.filter(is_approved=True)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
