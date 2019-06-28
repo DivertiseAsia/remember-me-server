@@ -7,7 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
 
-from user_manager.serializers import UserSerializer, RegistrationSerializer, LoginSerializer
+from user_manager.serializers import UserSerializer, RegistrationSerializer, LoginSerializer, BirthdaySerializer
 
 account_activation_token = PasswordResetTokenGenerator()
 
@@ -53,4 +53,13 @@ class AccountViewSet(viewsets.GenericViewSet):
         :param request: Django request param
         """
         serializer = self.get_serializer(self.request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(methods=['GET'], detail=False, serializer_class=BirthdaySerializer, permission_classes=(AllowAny,))
+    def birthday(self, request):
+        """
+        Retrieve user profile
+        ---
+        """
+        serializer = self.get_serializer(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

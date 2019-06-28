@@ -102,3 +102,20 @@ class LoginSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         pass
+
+
+class BirthdaySerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    birth_date = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_name(obj):
+        return obj.first_name
+
+    @staticmethod
+    def get_birth_date(obj):
+        return Profile.objects.get(user=obj).birth_date
+
+    class Meta:
+        model = User
+        fields = ('name', 'birth_date')
