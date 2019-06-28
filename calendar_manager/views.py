@@ -55,7 +55,7 @@ class LeaveRequestViewSet(viewsets.mixins.CreateModelMixin,
         ---
         """
         instance = self.get_object()
-        if instance.user is not request.user:
+        if instance.user != request.user:
             return Response(status=status.HTTP_404_NOT_FOUND)
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
