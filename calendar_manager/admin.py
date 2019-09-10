@@ -13,6 +13,11 @@ class LeaveRequestAdminView(admin.ModelAdmin):
     list_display = ('user', 'type', 'from_date', 'to_date', 'reason', 'is_approved')
     readonly_fields = ('rid', 'user', 'type', 'from_date', 'to_date', 'reason')
 
+    def has_delete_permission(self, request, obj=None):
+        if not obj:
+            return False
+        super().has_delete_permission(request, obj)
+
 
 admin.site.register(Holiday, HolidayAdminView)
 admin.site.register(LeaveRequest, LeaveRequestAdminView)
