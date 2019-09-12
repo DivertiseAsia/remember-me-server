@@ -66,6 +66,6 @@ class LeaveRequestViewSet(viewsets.mixins.CreateModelMixin,
         Get all approved leave requests.
         ---
         """
-        queryset = self.queryset.filter(is_approved=True)
+        queryset = self.queryset.filter(status=LeaveRequest.APPROVED)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

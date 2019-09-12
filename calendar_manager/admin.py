@@ -10,7 +10,7 @@ class HolidayAdminView(admin.ModelAdmin):
 
 class LeaveRequestAdminView(admin.ModelAdmin):
     model = LeaveRequest
-    list_display = ('user', 'type', 'from_date', 'to_date', 'reason', 'is_approved')
+    list_display = ('user', 'type', 'from_date', 'to_date', 'reason', 'status')
     readonly_fields = ('rid', 'user', 'type', 'from_date', 'to_date', 'reason')
 
     def has_delete_permission(self, request, obj=None):

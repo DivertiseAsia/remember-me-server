@@ -19,16 +19,24 @@ class LeaveRequest(models.Model):
         (PERSONAL, "Personal"),
         (SICK, "Sick"),
     )
+    REJECTED = 0
+    APPROVED = 1
+    PENDING = 2
+    REQUEST_STATUS = (
+        (REJECTED, "Rejected"),
+        (APPROVED, "Approved"),
+        (PENDING, "Pending"),
+    )
     rid = models.UUIDField('Request ID', default=uuid.uuid4, unique=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.IntegerField('Leave Type', choices=LEAVE_TYPE, default=PERSONAL)
     from_date = models.DateField()
     to_date = models.DateField()
     reason = models.CharField(max_length=255)
-    is_approved = models.BooleanField(default=False)
+    status = models.PositiveSmallIntegerField('Request Status', choices=REQUEST_STATUS, default=PENDING)
 
 
 @receiver(pre_save, sender=LeaveRequest)
-def auto_approve_on_sick_type(sender, instance, true=True, **kwargs):
+def auto_approve_on_sick_type(sender, instance, *args, **kwargs):
     if instance.type == LeaveRequest.SICK:
-        instance.is_approved = true
+        instance.status = LeaveRequest.APPROVED

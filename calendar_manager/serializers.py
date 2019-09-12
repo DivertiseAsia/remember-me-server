@@ -12,8 +12,8 @@ class HolidaySerializer(serializers.ModelSerializer):
 
 class LeaveRequestSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    is_approved = serializers.ReadOnlyField()
+    status = serializers.ReadOnlyField()
 
     class Meta:
         model = LeaveRequest
-        fields = ('rid', 'user', 'type', 'from_date', 'to_date', 'reason', 'is_approved')
+        fields = ('rid', 'user', 'type', 'from_date', 'to_date', 'reason', 'status')
