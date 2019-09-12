@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+{% extends 'admin/change_form.html' %}
+{% block submit_buttons_bottom %}
+    <div class="submit-row">
+        {% if pending %}
+        <input type="submit" style="background: seagreen" value="Approve" name="_approve">
+        <input type="submit" style="background: firebrick" value="Reject" name="_reject">
+        {% else %}
+        <input type="button" style="background: #999" value="Back" onclick="window.history.back();">
+        {% endif %}
+    </div>
+{% endblock %}

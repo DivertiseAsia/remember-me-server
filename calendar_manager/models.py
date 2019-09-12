@@ -35,6 +35,14 @@ class LeaveRequest(models.Model):
     reason = models.CharField(max_length=255)
     status = models.PositiveSmallIntegerField('Request Status', choices=REQUEST_STATUS, default=PENDING)
 
+    def approve(self):
+        self.status = self.APPROVED
+        self.save()
+
+    def reject(self):
+        self.status = self.REJECTED
+        self.save()
+
 
 @receiver(pre_save, sender=LeaveRequest)
 def auto_approve_on_sick_type(sender, instance, *args, **kwargs):
