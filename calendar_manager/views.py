@@ -34,9 +34,8 @@ class LeaveRequestViewSet(viewsets.mixins.CreateModelMixin,
         """
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            req = LeaveRequest(user=request.user, **serializer.data)
-            req.save()
-            return Response(self.get_serializer(req).data, status=status.HTTP_201_CREATED)
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -60,7 +59,7 @@ class LeaveRequestViewSet(viewsets.mixins.CreateModelMixin,
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(methods=['GET'], detail=False, permission_classes=(AllowAny,))
+    @action(methods=['GET'], detail=False)
     def all(self, request):
         """
         Get all approved leave requests.

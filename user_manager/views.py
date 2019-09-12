@@ -48,17 +48,16 @@ class AccountViewSet(viewsets.GenericViewSet):
     @action(methods=['GET'], detail=False, serializer_class=UserSerializer)
     def profile(self, request):
         """
-        Retrieve user profile
+        Retrieve user profile.
         ---
-        :param request: Django request param
         """
         serializer = self.get_serializer(self.request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=['GET'], detail=False, serializer_class=BirthdaySerializer, permission_classes=(AllowAny,))
+    @action(methods=['GET'], detail=False, serializer_class=BirthdaySerializer)
     def birthday(self, request):
         """
-        Retrieve user profile
+        Get all user birth dates.
         ---
         """
         serializer = self.get_serializer(self.queryset, many=True)
