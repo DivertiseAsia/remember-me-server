@@ -1,0 +1,41 @@
+version: 2
+jobs:
+  checkout:
+    working_directory: ~/rememberme-server
+    docker:
+      - image: circleci/python:3.6-browsers
+    steps:
+      - checkout
+
+      - save_cache:
+          
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+          
+          paths:
+            - ~/rememberme-server
+
+      - restore_cache:
+          keys:
+          
+          - v1-dependencies-{{ checksum "requirements.txt" }}
+          
+          - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+
+      - save_cache:
+          paths:
+            - ./venv
+          
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+
+workflows:
+  version: 2
+  deploy-flow:
+    jobs:
+      - checkout
