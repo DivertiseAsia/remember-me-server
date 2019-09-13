@@ -19,3 +19,5 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+SUPER_PASSWORD = 'RememberME1234'

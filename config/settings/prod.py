@@ -19,3 +19,5 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
+
+SUPER_PASSWORD = os.environ.get('SUPER_PASSWORD', 'RememberME1234')
