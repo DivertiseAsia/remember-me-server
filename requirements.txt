@@ -16,9 +16,12 @@ django-extensions==2.2.1
 django-prettyjson==0.4.1
 django-rest-registration==0.3.12
 django-rest-swagger==2.2.0
+django-ses==0.8.7
+django-storages==1.7.1
 djangorestframework==3.8.2
 djangorestframework-jwt==1.11.0
 docutils==0.14
+future==0.17.1
 gunicorn==19.9.0
 idna==2.7
 ipython==7.8.0
@@ -48,3 +51,4 @@ traitlets==4.3.2
 uritemplate==3.0.0
 urllib3==1.23
 wcwidth==0.1.7
+whitenoise==4.1.3
