@@ -91,7 +91,7 @@ workflows:
       - deploy-to-heroku:
           requires:
             - unit-test
-            - filters:
-                branches:
-                  only:
-                    - production
+          filters:
+            branches:
+              only:
+                - production
