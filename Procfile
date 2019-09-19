@@ -1,2 +1,2 @@
-release: python manage.py migrate
+release: ./start.sh
 web: gunicorn config.wsgi --log-file -
