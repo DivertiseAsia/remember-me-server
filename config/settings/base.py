@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_swagger',
     'rest_framework.authtoken',
+    'import_export',
     'corsheaders',
     'user_manager',
     'calendar_manager',
