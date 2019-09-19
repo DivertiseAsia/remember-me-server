@@ -1,12 +1,14 @@
 from django.contrib import admin
 from django.http import HttpResponseRedirect
+from import_export.admin import ImportExportModelAdmin
 
 from calendar_manager.models import Holiday, LeaveRequest
 
 
-class HolidayAdminView(admin.ModelAdmin):
+class HolidayAdminView(ImportExportModelAdmin):
     model = Holiday
     list_display = ('name', 'date', 'is_vacation')
+    ordering = ('date',)
 
 
 class LeaveRequestAdminView(admin.ModelAdmin):
