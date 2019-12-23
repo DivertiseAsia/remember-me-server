@@ -44,10 +44,10 @@ class RegistrationSerializer(UserSerializer):
 
     def validate(self, data):
         if not data.get('password') or not data.get('confirm_password'):
-            raise serializers.ValidationError("Please enter a password and confirm it.")
+            raise serializers.ValidationError('Please enter a password and confirm it.')
 
         if data.get('password') != data.get('confirm_password'):
-            raise serializers.ValidationError("Passwords do not match.")
+            raise serializers.ValidationError('Passwords do not match.')
 
         return data
 
@@ -119,3 +119,24 @@ class BirthdaySerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('name', 'birth_date')
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(required=True)
+
+    def validate(self, data):
+        if not data.get('new_password') or not data.get('confirm_password'):
+            raise serializers.ValidationError('Please enter new password and confirm it.')
+
+        if data.get('new_password') != data.get('confirm_password'):
+            raise serializers.ValidationError('New password and confirm password do not match.')
+
+        return data
+
+    def create(self, validated_data):
+        pass
+
+    def update(self, instance, validated_data):
+        pass
