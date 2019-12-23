@@ -19,10 +19,11 @@ from rest_framework import routers
 from rest_framework_swagger.views import get_swagger_view
 
 from calendar_manager.views import HolidayViewSet, LeaveRequestViewSet
-from user_manager.views import AccountViewSet
+from user_manager.views import AccountViewSet, PasswordViewSet
 
 router = routers.DefaultRouter()
 router.register(r'account', AccountViewSet, base_name='account')
+router.register(r'password', PasswordViewSet, base_name='password')
 router.register(r'holiday', HolidayViewSet, base_name='holiday')
 router.register(r'leave', LeaveRequestViewSet, base_name='leave')
 

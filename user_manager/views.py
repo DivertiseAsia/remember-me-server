@@ -7,7 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
 
-from user_manager.serializers import UserSerializer, RegistrationSerializer, LoginSerializer, BirthdaySerializer
+from user_manager.serializers import UserSerializer, RegistrationSerializer, LoginSerializer, BirthdaySerializer, \
+    ChangePasswordSerializer
 
 account_activation_token = PasswordResetTokenGenerator()
 
@@ -27,7 +28,7 @@ class AccountViewSet(viewsets.GenericViewSet):
         if serializer.is_valid():
             user = serializer.save()
             return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['POST'], detail=False, serializer_class=LoginSerializer, permission_classes=(AllowAny,))
     def login(self, request):
@@ -39,11 +40,11 @@ class AccountViewSet(viewsets.GenericViewSet):
         if serializer.is_valid():
             user = serializer.verify_user()
             if not user:
-                return Response({'error': 'Password is wrong.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': {'password': ['Password is wrong.']}}, status=status.HTTP_400_BAD_REQUEST)
             token, _ = Token.objects.get_or_create(user=user)
             return Response({'token': token.key}, status=status.HTTP_200_OK)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['GET'], detail=False, serializer_class=UserSerializer)
     def profile(self, request):
@@ -62,3 +63,25 @@ class AccountViewSet(viewsets.GenericViewSet):
         """
         serializer = self.get_serializer(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class PasswordViewSet(viewsets.GenericViewSet):
+    permission_classes = (IsAuthenticated,)
+    User = get_user_model()
+    queryset = User.objects.all()
+
+    @action(methods=['POST'], detail=False, serializer_class=ChangePasswordSerializer)
+    def change(self, request):
+        """
+        Authorized user changes password.
+        ---
+        """
+        user = request.user
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            if not user.check_password(serializer.data.get('old_password')):
+                return Response({'error': {'old_password': ['Password is wrong.']}}, status=status.HTTP_400_BAD_REQUEST)
+            user.set_password(serializer.data.get('new_password'))
+            user.save()
+            return Response(status=status.HTTP_200_OK)
+        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
