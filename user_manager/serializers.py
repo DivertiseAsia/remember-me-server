@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model, authenticate
-from rest_framework import serializers, validators
+from rest_framework import serializers
 
 from user_manager.models import Profile
 
@@ -26,21 +26,25 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RegistrationSerializer(UserSerializer):
-    email = serializers.EmailField(required=True, validators=[
-        validators.UniqueValidator(
-            queryset=User.objects.all(),
-            message='This email is already registered.')
-    ])
-    username = serializers.CharField(required=True, validators=[
-        validators.UniqueValidator(
-            queryset=User.objects.all(),
-            message='The username is already being used.')
-    ])
+    email = serializers.EmailField(required=True)
+    username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True)
     confirm_password = serializers.CharField(write_only=True)
     first_name = serializers.CharField(required=True, write_only=True)
     last_name = serializers.CharField(required=True, write_only=True)
     birth_date = serializers.DateField(required=True, write_only=True)
+
+    @staticmethod
+    def validate_email(value):
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError('This email is already registered.')
+        return value.lower()
+
+    @staticmethod
+    def validate_username(value):
+        if User.objects.filter(username__iexact=value).exists():
+            raise serializers.ValidationError('The username is already being used.')
+        return value.lower()
 
     def validate(self, data):
         if not data.get('password') or not data.get('confirm_password'):

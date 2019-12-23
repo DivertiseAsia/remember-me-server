@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         email = 'dev@divertise.asia'
-        password = settings.AUTH_USER_MODEL
+        password = settings.SUPER_PASSWORD
         username = 'dev'
 
         if User.objects.filter(email__iexact=email).exists():
