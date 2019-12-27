@@ -1,12 +1,13 @@
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils import timezone
 
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from calendar_manager.models import Holiday, LeaveRequest
-from calendar_manager.serializers import HolidaySerializer, LeaveRequestSerializer
+from calendar_manager.models import Holiday, LeaveRequest, Event
+from calendar_manager.serializers import HolidaySerializer, LeaveRequestSerializer, EventSerializer
 
 account_activation_token = PasswordResetTokenGenerator()
 
@@ -68,3 +69,10 @@ class LeaveRequestViewSet(viewsets.mixins.CreateModelMixin,
         queryset = self.queryset.filter(status=LeaveRequest.APPROVED)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class EventViewSet(viewsets.mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = EventSerializer
+    queryset = Event.objects.filter(date__gte=timezone.now().date())

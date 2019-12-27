@@ -52,7 +52,7 @@ class EventAdminView(ImportExportModelAdmin):
 
     @staticmethod
     def time(obj):
-        return f'{obj.start.strftime("%H:%M")} - {obj.end.strftime("%H:%M")}' if obj.all_day else ''
+        return '' if obj.all_day else f'{obj.start.strftime("%H:%M")}–{obj.end.strftime("%H:%M")}'
 
     @staticmethod
     def short_note(obj):
