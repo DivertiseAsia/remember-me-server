@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from import_export.admin import ImportExportModelAdmin
 
-from calendar_manager.models import Holiday, LeaveRequest
+from calendar_manager.models import Holiday, LeaveRequest, Event
 
 
 class HolidayAdminView(ImportExportModelAdmin):
@@ -45,5 +45,20 @@ class LeaveRequestAdminView(admin.ModelAdmin):
         return super().response_change(request, obj)
 
 
+class EventAdminView(ImportExportModelAdmin):
+    model = Event
+    list_display = ('name', 'date', 'all_day', 'time', 'place', 'short_note')
+    ordering = ('date',)
+
+    @staticmethod
+    def time(obj):
+        return f'{obj.start.strftime("%H:%M")} - {obj.end.strftime("%H:%M")}' if obj.all_day else ''
+
+    @staticmethod
+    def short_note(obj):
+        return obj.note[:75] + '...' if len(obj.note) > 75 else obj.note
+
+
 admin.site.register(Holiday, HolidayAdminView)
 admin.site.register(LeaveRequest, LeaveRequestAdminView)
+admin.site.register(Event, EventAdminView)

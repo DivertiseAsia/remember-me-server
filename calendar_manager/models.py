@@ -1,3 +1,4 @@
+import datetime
 import uuid
 
 from django.db import models
@@ -29,11 +30,11 @@ class LeaveRequest(models.Model):
     )
     rid = models.UUIDField('Request ID', default=uuid.uuid4, unique=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    type = models.IntegerField('Leave Type', choices=LEAVE_TYPE, default=PERSONAL)
+    type = models.IntegerField('Leave type', choices=LEAVE_TYPE, default=PERSONAL)
     from_date = models.DateField()
     to_date = models.DateField()
     reason = models.CharField(max_length=255)
-    status = models.PositiveSmallIntegerField('Request Status', choices=REQUEST_STATUS, default=PENDING)
+    status = models.PositiveSmallIntegerField('Request status', choices=REQUEST_STATUS, default=PENDING)
 
     def approve(self):
         self.status = self.APPROVED
@@ -48,3 +49,13 @@ class LeaveRequest(models.Model):
 def auto_approve_on_sick_type(sender, instance, *args, **kwargs):
     if instance.type == LeaveRequest.SICK:
         instance.status = LeaveRequest.APPROVED
+
+
+class Event(models.Model):
+    name = models.CharField(max_length=255)
+    date = models.DateField()
+    all_day = models.BooleanField(default=False)
+    start = models.TimeField('Start time', default=datetime.time(10, 00))
+    end = models.TimeField('End time', default=datetime.time(18, 00))
+    place = models.CharField(max_length=255, null=True, blank=True)
+    note = models.TextField(null=True, blank=True)
