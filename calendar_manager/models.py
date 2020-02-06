@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 
 class Holiday(models.Model):
@@ -47,7 +48,7 @@ class LeaveRequest(models.Model):
 
 @receiver(pre_save, sender=LeaveRequest)
 def auto_approve_on_sick_type(sender, instance, *args, **kwargs):
-    if instance.type == LeaveRequest.SICK:
+    if instance.type == LeaveRequest.SICK and instance.from_date < (timezone.now() + datetime.timedelta(days=2)).date():
         instance.status = LeaveRequest.APPROVED
 
 
