@@ -6,9 +6,11 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ORIGIN_URL = 'https://rememberme-server.herokuapp.com'
+ORIGIN_PROTOCOL = 'https'
+ORIGIN_URL = 'rememberme-server.herokuapp.com'
+
 ALLOWED_HOSTS = [ORIGIN_URL]
-CORS_ORIGIN_WHITELIST = [ORIGIN_URL]
+CORS_ORIGIN_WHITELIST = ['rememberme-38415.web.app']
 
 DATABASES = {
     'default': {

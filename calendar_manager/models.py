@@ -58,7 +58,11 @@ def auto_approve_on_sick_type(sender, instance, *args, **kwargs):
 @receiver(post_save, sender=LeaveRequest)
 def send_email_on_new_pending(sender, instance, created, *args, **kwargs):
     if created and instance.status == LeaveRequest.PENDING:
-        EmailHelper('New Leave Request', 'new_leave_request_email.html', ctx={'origin': settings.ORIGIN_URL}).send()
+        EmailHelper(
+            subject='New Leave Request',
+            template_file='new_leave_request_email.html',
+            ctx={'origin': settings.ORIGIN_URL, 'protocol': settings.ORIGIN_PROTOCOL}
+        ).send()
 
 
 class Event(models.Model):
