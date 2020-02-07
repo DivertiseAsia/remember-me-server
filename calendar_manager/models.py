@@ -1,11 +1,14 @@
 import datetime
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.utils import timezone
+
+from general_manager.helpers import EmailHelper
 
 
 class Holiday(models.Model):
@@ -50,6 +53,12 @@ class LeaveRequest(models.Model):
 def auto_approve_on_sick_type(sender, instance, *args, **kwargs):
     if instance.type == LeaveRequest.SICK and instance.from_date < (timezone.now() + datetime.timedelta(days=2)).date():
         instance.status = LeaveRequest.APPROVED
+
+
+@receiver(post_save, sender=LeaveRequest)
+def send_email_on_new_pending(sender, instance, created, *args, **kwargs):
+    if created and instance.status == LeaveRequest.PENDING:
+        EmailHelper('New Leave Request', 'new_leave_request_email.html', ctx={'origin': settings.ORIGIN_URL}).send()
 
 
 class Event(models.Model):
