@@ -38,6 +38,7 @@ class LeaveRequest(models.Model):
     from_date = models.DateField()
     to_date = models.DateField()
     reason = models.CharField(max_length=255)
+    is_remote = models.BooleanField('Remote work', default=False)
     status = models.PositiveSmallIntegerField('Request status', choices=REQUEST_STATUS, default=PENDING)
 
     def approve(self):
