@@ -13,9 +13,9 @@ class HolidayAdminView(ImportExportModelAdmin):
 
 class LeaveRequestAdminView(admin.ModelAdmin):
     model = LeaveRequest
-    fields = ('rid', 'user', 'type', 'from_date', 'to_date', 'reason')
-    list_display = ('user', 'type', 'from_date', 'to_date', 'reason', 'status')
-    readonly_fields = ('rid', 'user', 'type', 'from_date', 'to_date', 'reason')
+    fields = ('rid', 'user', 'type', 'from_date', 'to_date', 'reason', 'is_remote')
+    list_display = ('user', 'type', 'from_date', 'to_date', 'reason', 'is_remote', 'status')
+    readonly_fields = ('rid', 'user', 'type', 'from_date', 'to_date', 'reason', 'is_remote')
     list_display_links = ('status',)
 
     change_form_template = 'approve_reject_buttons.html'

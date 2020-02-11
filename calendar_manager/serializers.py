@@ -18,7 +18,7 @@ class LeaveRequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LeaveRequest
-        fields = ('rid', 'user', 'type', 'from_date', 'to_date', 'reason', 'status')
+        fields = ('rid', 'user', 'type', 'from_date', 'to_date', 'reason', 'is_remote', 'status')
         extra_kwargs = {'status': {'read_only': True}}
 
 
