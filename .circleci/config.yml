@@ -72,7 +72,7 @@ jobs:
           name: Deploy to Heroku if branch is production
           command: |
             if [ "${CIRCLE_BRANCH}" == "production" ]; then
-              git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+              git push -f https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
             fi
 
 workflows:
