@@ -58,10 +58,11 @@ class AccountViewSet(viewsets.GenericViewSet):
     @action(methods=['GET'], detail=False, serializer_class=BirthdaySerializer)
     def birthday(self, request):
         """
-        Get all user birth dates.
+        Get all active user birth dates.
         ---
         """
-        serializer = self.get_serializer(self.queryset, many=True)
+        queryset = self.get_queryset().filter(user__is_active=True)
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
