@@ -61,7 +61,7 @@ class AccountViewSet(viewsets.GenericViewSet):
         Get all active user birth dates.
         ---
         """
-        queryset = self.get_queryset().filter(user__is_active=True)
+        queryset = self.get_queryset().filter(is_active=True)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
