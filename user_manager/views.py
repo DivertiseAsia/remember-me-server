@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
 
 from user_manager.serializers import UserSerializer, RegistrationSerializer, LoginSerializer, BirthdaySerializer, \
-    ChangePasswordSerializer
+    ChangePasswordSerializer, ForgetPasswordSerializer
 
 account_activation_token = PasswordResetTokenGenerator()
 
@@ -84,5 +84,18 @@ class PasswordViewSet(viewsets.GenericViewSet):
                 return Response({'error': {'old_password': ['Password is wrong.']}}, status=status.HTTP_400_BAD_REQUEST)
             user.set_password(serializer.data.get('new_password'))
             user.save()
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['POST'], detail=False, serializer_class=ForgetPasswordSerializer, permission_classes=(AllowAny,))
+    def forget(self, request):
+        """
+        Send reset password link to user email.
+        ---
+        """
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.send_reset_password_email()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

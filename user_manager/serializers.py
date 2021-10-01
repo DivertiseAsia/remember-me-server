@@ -1,6 +1,12 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from rest_framework import serializers
 
+from general_manager.generators.tokens import *
 from user_manager.models import Profile
 
 User = get_user_model()
@@ -123,6 +129,39 @@ class BirthdaySerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('name', 'birth_date')
+
+
+class ForgetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+    def validate(self, data):
+        try:
+            self.instance = User.objects.get(email__iexact=data.get('email'), is_active=True)
+        except User.DoesNotExist:
+            raise serializers.ValidationError('This account does not exist.')
+        return data
+
+    def create(self, validated_data):
+        pass
+
+    def update(self, instance, validated_data):
+        pass
+
+    def send_reset_password_email(self):
+        uid = urlsafe_base64_encode(force_bytes(self.instance.pk))
+        token = PasswordResetToken.make_token(self.instance),
+        ctx = {
+            'nickname': f'{self.instance.username}',
+            'reset_password_link': f'{settings.ORIGIN}://{settings.ORIGIN_URL}/password/reset/{uid}/{token}/'
+        }
+        return send_mail(
+            subject='RememberME Forget Password',
+            message='Do you forget the password for your RememberME account?',
+            from_email='dev@divertise.asia',
+            recipient_list=[self.email],
+            html_message=render_to_string('reset_password_email.html', ctx),
+            fail_silently=False
+        )
 
 
 class ChangePasswordSerializer(serializers.Serializer):
