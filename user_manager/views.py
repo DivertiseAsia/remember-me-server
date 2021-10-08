@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.shortcuts import render
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -8,9 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
 
 from user_manager.serializers import UserSerializer, RegistrationSerializer, LoginSerializer, BirthdaySerializer, \
-    ChangePasswordSerializer, ForgetPasswordSerializer
-
-account_activation_token = PasswordResetTokenGenerator()
+    ChangePasswordSerializer, ForgetPasswordSerializer, ResetPasswordSerializer
 
 
 class AccountViewSet(viewsets.GenericViewSet):
@@ -99,3 +97,17 @@ class PasswordViewSet(viewsets.GenericViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['POST'], detail=False, serializer_class=ResetPasswordSerializer, permission_classes=(AllowAny,),
+            url_path=r'^reset/(?P<uid64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$')
+    def reset(self, request, uid64, token):
+        """
+        Send new password to active user email.
+        ---
+        """
+        serializer = self.get_serializer(data={'uid64': uid64, 'token': token})
+        if serializer.is_valid():
+            serializer.save()
+            return render(request, 'pages/reset_password_success.html')
+        else:
+            return render(request, 'pages/reset_password_invalid.html')

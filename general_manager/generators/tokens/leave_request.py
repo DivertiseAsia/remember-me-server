@@ -55,6 +55,3 @@ class LeaveRequestTokenGenerator:
             return False
 
         return True
-
-
-leave_request_token_generator = LeaveRequestTokenGenerator()
