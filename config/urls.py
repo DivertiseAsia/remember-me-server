@@ -22,11 +22,11 @@ from calendar_manager.views import HolidayViewSet, LeaveRequestViewSet, EventVie
 from user_manager.views import AccountViewSet, PasswordViewSet
 
 router = routers.DefaultRouter()
-router.register(r'account', AccountViewSet, base_name='account')
-router.register(r'password', PasswordViewSet, base_name='password')
-router.register(r'holiday', HolidayViewSet, base_name='holiday')
-router.register(r'leave', LeaveRequestViewSet, base_name='leave')
-router.register(r'event', EventViewSet, base_name='event')
+router.register(r'account', AccountViewSet, basename='account')
+router.register(r'password', PasswordViewSet, basename='password')
+router.register(r'holiday', HolidayViewSet, basename='holiday')
+router.register(r'leave', LeaveRequestViewSet, basename='leave')
+router.register(r'event', EventViewSet, basename='event')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
