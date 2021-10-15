@@ -62,7 +62,18 @@ def send_email_on_new_pending(sender, instance, created, *args, **kwargs):
         EmailHelper(
             subject='New Leave Request',
             template_file='new_leave_request_email.html',
-            ctx={'origin': settings.ORIGIN_URL, 'protocol': settings.ORIGIN_PROTOCOL}
+            ctx={
+                'origin': settings.ORIGIN_URL,
+                'protocol': settings.ORIGIN_PROTOCOL,
+                'first_name': instance.user.first_name.capitalize(),
+                'last_name': instance.user.last_name.capitalize(),
+                'nickname': instance.user.username.capitalize(),
+                'reason': instance.reason,
+                'from_date': instance.from_date.strftime('%d %b %Y'),
+                'to_date': instance.to_date.strftime('%d %b %Y'),
+                'approve_link': '',  # TODO: approve link
+                'reject_link': '',  # TODO: reject link
+            }
         ).send()
 
 

@@ -109,3 +109,6 @@ static/
 
 # docker-compose might contain sensitive data.
 docker-compose.yml
+
+# SendGrid environment variable
+sendgrid.env

@@ -3,7 +3,7 @@ jobs:
   checkout:
     working_directory: ~/rememberme-server
     docker:
-      - image: circleci/python:3.7.2-browsers
+      - image: cimg/python:3.8.1
     steps:
       - checkout
       - save_cache:
@@ -28,7 +28,7 @@ jobs:
   unit-test:
     working_directory: ~/rememberme-server
     docker:
-      - image: circleci/python:3.6-browsers
+      - image: cimg/python:3.8.1
         environment:
           DJANGO_SETTINGS_MODULE: config.settings.test
           PYTHONUNBUFFERED: 1
