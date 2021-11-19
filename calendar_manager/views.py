@@ -3,11 +3,13 @@ from django.utils import timezone
 
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from calendar_manager.models import Holiday, LeaveRequest, Event
 from calendar_manager.serializers import HolidaySerializer, LeaveRequestSerializer, EventSerializer
+from general_manager.generators.tokens import *
 
 account_activation_token = PasswordResetTokenGenerator()
 
@@ -69,6 +71,32 @@ class LeaveRequestViewSet(viewsets.mixins.CreateModelMixin,
         queryset = self.get_queryset().filter(status=LeaveRequest.APPROVED)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(methods=['POST'], detail=False,
+            url_path=r'^approve/(?P<rid>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$')
+    def approve(self, request, rid, token):
+        """
+        Approve a leave request.
+        ---
+        """
+        instance = get_object_or_404(self.get_queryset(), rid=rid)
+        if LeaveRequestToken.check_token(instance, token):
+            instance.status = LeaveRequest.APPROVED
+            instance.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=['POST'], detail=False,
+            url_path=r'^reject/(?P<rid>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$')
+    def reject(self, request, rid, token):
+        """
+        Reject a leave request.
+        ---
+        """
+        instance = get_object_or_404(self.get_queryset(), rid=rid)
+        if LeaveRequestToken.check_token(instance, token):
+            instance.status = LeaveRequest.REJECTED
+            instance.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class EventViewSet(viewsets.mixins.ListModelMixin,
