@@ -149,11 +149,11 @@ class ForgetPasswordSerializer(serializers.Serializer):
         pass
 
     def send_reset_password_email(self):
-        uid = urlsafe_base64_encode(force_bytes(self.instance.pk))
+        uid64 = urlsafe_base64_encode(force_bytes(self.instance.pk))
         token = PasswordResetToken.make_token(self.instance),
         ctx = {
             'nickname': f'{self.instance.username}',
-            'reset_password_link': f'{settings.ORIGIN}://{settings.ORIGIN_URL}/password/reset/{uid}/{token}/'
+            'reset_password_link': f'{settings.ORIGIN_PROTOCOL}://{settings.ORIGIN_URL}/password/reset/{uid64}/{token}/'
         }
         return send_mail(
             subject='RememberME Forget Password',
