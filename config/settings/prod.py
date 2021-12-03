@@ -12,7 +12,7 @@ ORIGIN_PROTOCOL = 'https'
 ORIGIN_URL = 'rememberme-server.herokuapp.com'
 
 ALLOWED_HOSTS = [ORIGIN_URL]
-CORS_ORIGIN_WHITELIST = ['rememberme-38415.web.app']
+CORS_ORIGIN_WHITELIST = ['https://rememberme-38415.web.app']
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
