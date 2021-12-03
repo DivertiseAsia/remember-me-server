@@ -7,7 +7,10 @@ from django.contrib.auth.models import User
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
+from general_manager.generators.tokens import *
 from general_manager.helpers import EmailHelper
 
 
@@ -59,6 +62,8 @@ def auto_approve_on_sick_type(sender, instance, *args, **kwargs):
 @receiver(post_save, sender=LeaveRequest)
 def send_email_on_new_pending(sender, instance, created, *args, **kwargs):
     if created and instance.status == LeaveRequest.PENDING:
+        rid64 = urlsafe_base64_encode(force_bytes(instance.rid))
+        token = LeaveRequestToken.make_token(instance)
         EmailHelper(
             subject='New Leave Request',
             template_file='new_leave_request_email.html',
@@ -71,8 +76,8 @@ def send_email_on_new_pending(sender, instance, created, *args, **kwargs):
                 'reason': instance.reason,
                 'from_date': instance.from_date.strftime('%d %b %Y'),
                 'to_date': instance.to_date.strftime('%d %b %Y'),
-                'approve_link': '',  # TODO: approve link
-                'reject_link': '',  # TODO: reject link
+                'approve_link': f'{settings.ORIGIN_PROTOCOL}://{settings.ORIGIN_URL}/leave/approve/{rid64}/{token}/',
+                'reject_link': f'{settings.ORIGIN_PROTOCOL}://{settings.ORIGIN_URL}/leave/reject/{rid64}/{token}/',
             }
         ).send()
 
