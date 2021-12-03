@@ -1,3 +1,5 @@
+import os
+import psycopg2
 from .base import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -11,6 +13,10 @@ ORIGIN_URL = 'rememberme-server.herokuapp.com'
 
 ALLOWED_HOSTS = [ORIGIN_URL]
 CORS_ORIGIN_WHITELIST = ['rememberme-38415.web.app']
+
+DATABASE_URL = os.environ['DATABASE_URL']
+
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
 DATABASES = {
     'default': {
@@ -28,3 +34,6 @@ SUPER_PASSWORD = os.environ.get('SUPER_PASSWORD', 'RememberME1234')
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY', 'SG.PLEASE_ADD_SENDGRID_API_KEY')
 DEV_EMAIL = os.environ.get('DEV_EMAIL', 'dev@divertise.asia')
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'hunter@divertise.asia')
+
+import dj_database_url
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
