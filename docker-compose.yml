@@ -1,0 +1,25 @@
+version: '3'
+services:
+  db:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_PASSWORD=password
+      - PGDATA=/tmp
+    ports:
+      - "5432:5432"
+    container_name: rememberme_db
+  web:
+    image: rememberme-server
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.dev
+      - PYTHONUNBUFFERED=1
+      - SECRET_KEY=whatever-secret-key
+    build: .
+    command: ["./start.sh"]
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "8000:8000"
+    container_name: rememberme_web
+    depends_on:
+      - db

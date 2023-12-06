@@ -107,8 +107,5 @@ static/
 # IDE generated files
 .idea/
 
-# docker-compose might contain sensitive data.
-docker-compose.yml
-
 # SendGrid environment variable
 sendgrid.env
